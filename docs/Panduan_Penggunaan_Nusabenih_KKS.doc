@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>Panduan Penggunaan Nusabenih KKS</title>
+  <style>
+    body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #111; line-height: 1.35; }
+    h1 { font-size: 22pt; margin: 0 0 6pt 0; }
+    h2 { font-size: 16pt; margin: 18pt 0 6pt 0; }
+    h3 { font-size: 13pt; margin: 14pt 0 6pt 0; }
+    p { margin: 0 0 8pt 0; }
+    ul { margin: 0 0 10pt 18pt; }
+    li { margin: 0 0 4pt 0; }
+    .muted { color: #555; }
+    .chip { display: inline-block; padding: 2pt 6pt; border: 1px solid #ddd; border-radius: 10pt; font-size: 9.5pt; margin-right: 6pt; }
+    .chip.orange { border-color: #F57C00; color: #A64B00; }
+    .chip.green { border-color: #2E7D32; color: #1E5A21; }
+    .callout { border: 1px solid #e5e7eb; background: #fafafa; padding: 10pt; border-radius: 8pt; margin: 10pt 0; }
+    table { border-collapse: collapse; width: 100%; margin: 8pt 0 14pt 0; }
+    th, td { border: 1px solid #ddd; padding: 6pt 7pt; vertical-align: top; }
+    th { background: #f6f7f9; font-weight: bold; }
+    .small { font-size: 9.5pt; }
+    .mono { font-family: Consolas, "Courier New", monospace; font-size: 10pt; }
+    .pagebreak { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <h1>Nusabenih KKS</h1>
+  <p><b>Panduan Penggunaan Terintegrasi (Cross Function)</b></p>
+  <p class="muted small">Versi: 1.0 &nbsp;|&nbsp; Terakhir diperbarui: 2026-03-27 &nbsp;|&nbsp; Lingkup: Pohon Induk → Produksi → Laporan, termasuk QR & Monitoring Storage</p>
+
+  <div class="callout">
+    <p><b>Tujuan dokumen</b></p>
+    <ul>
+      <li>Memberi panduan penggunaan dari pertama kali (setup master & akses) sampai proses bisnis selesai (pengemasan kecambah & pelaporan).</li>
+      <li>Menyatukan alur kerja lintas fungsi/divisi: Breeding/Pemuliaan, Pohon Induk (Jantan/Betina), Produksi (Persib/Stok/Dormansi/Perkecambahan), Monitoring Storage.</li>
+    </ul>
+  </div>
+
+  <h2>1. Gambaran singkat sistem</h2>
+  <p>Nusabenih KKS adalah sistem pencatatan proses produksi kecambah kelapa sawit dengan prinsip:</p>
+  <ul>
+    <li><span class="chip orange"><b>Master</b> Maker–Approver</span> (DRAFT → SUBMITTED → APPROVED/REJECTED; maker tidak boleh approve sendiri).</li>
+    <li><span class="chip green"><b>Transaksi</b> Direct Submit</span> (operasional langsung tersimpan; 1 kali submit = 1 <span class="mono">Id Trx</span> berisi header + banyak baris).</li>
+    <li><span class="chip">SPU</span> data & user terscope per SPU (contoh: Marihat, Medan, Parindu, Dalu-dalu).</li>
+    <li><span class="chip">Filter</span> setiap datalist & report wajib memiliki filter (keyword, rentang tanggal, modul/submodul, storage, varietas, dll).</li>
+  </ul>
+
+  <h2>2. Peran (role) dan tanggung jawab</h2>
+  <table>
+    <tr>
+      <th>Role</th>
+      <th>Tanggung jawab utama</th>
+      <th>Output yang umum</th>
+    </tr>
+    <tr>
+      <td><b>Admin IT</b></td>
+      <td>Kelola user/role/permission; approval master; konfigurasi awal; bantuan operasional</td>
+      <td>Master data APPROVED, akses pengguna, audit</td>
+    </tr>
+    <tr>
+      <td><b>Admin Breeding/Pemuliaan</b></td>
+      <td>Input/maintain data terkait breeding (jika ada) dan referensi pendukung</td>
+      <td>Data pendukung breeding</td>
+    </tr>
+    <tr>
+      <td><b>Admin Pohon Induk – Jantan</b></td>
+      <td>Register jantan, panen, polen, viabilitas, konversi talkum; dukung puffer/talkum untuk penyerbukan</td>
+      <td>Stok polen/talkum, riwayat jantan</td>
+    </tr>
+    <tr>
+      <td><b>Admin Pohon Induk – Betina</b></td>
+      <td>Register betina, request puffer, penyerbukan/persil, monitoring persil, jadwal panen, panen persil</td>
+      <td>Persil/persilangan, jadwal & realisasi panen</td>
+    </tr>
+    <tr>
+      <td><b>Admin Produksi – Persib</b></td>
+      <td>Proses persiapan benih (timbang/fermentasi/cincang/pipil/kupas/seleksi, out)</td>
+      <td>Benih baik vs afkir, output ke stok</td>
+    </tr>
+    <tr>
+      <td><b>Admin Produksi – Stok</b></td>
+      <td>Terima benih dari persib, tagging, penempatan storage (ruang/rak), perpindahan fase</td>
+      <td>Benih tersimpan rapi per storage</td>
+    </tr>
+    <tr>
+      <td><b>Admin Produksi – Dormansi</b></td>
+      <td>Proses dormansi (rendam/panas/rendam), penempatan di bak/rak/ruang pemanas</td>
+      <td>WIP dormansi per storage</td>
+    </tr>
+    <tr>
+      <td><b>Admin Produksi – Perkecambahan</b></td>
+      <td>Proses perkecambahan (panas/pengamatan/seleksi/pengemasan)</td>
+      <td>Output kecambah baik/afkir & pengemasan</td>
+    </tr>
+    <tr>
+      <td><b>Viewer/Manajemen</b></td>
+      <td>Melihat dashboard/laporan</td>
+      <td>Rekap produksi, varietas, WIP, sensus</td>
+    </tr>
+  </table>
+
+  <h2>3. Cara mulai menggunakan (first time)</h2>
+  <h3>3.1 Login & SPU</h3>
+  <ul>
+    <li>Masuk melalui tombol <b>Masuk</b>, gunakan akun sesuai role.</li>
+    <li>Jika pengguna bersifat global (mis. Admin IT), pastikan memilih <b>SPU aktif</b> saat bekerja (jika tersedia fitur switch/filter SPU).</li>
+  </ul>
+  <div class="callout">
+    <p><b>Catatan SPU</b>: seluruh data transaksi & laporan mengikuti SPU. Jika data “hilang”, pastikan SPU/filter Anda benar.</p>
+  </div>
+
+  <h3>3.2 Setup master data (wajib sebelum transaksi)</h3>
+  <p>Transaksi membutuhkan master data berstatus <b>APPROVED</b>. Urutan setup yang disarankan:</p>
+  <ol>
+    <li><b>SPU</b> (jika belum ada) → pastikan kebun menginduk ke SPU.</li>
+    <li><b>Varietas</b> (mis. dumpy, dura, yangambi).</li>
+    <li><b>Lokasi kebun</b>: Kebun → Afdeling → Blok.</li>
+    <li><b>POS</b> (opsional) per kebun.</li>
+    <li><b>Pohon</b>: wajib pilih kebun, blok, varietas, <b>sex</b>, dan atribut sensus (tahun tanam, kondisi, dll). POS opsional.</li>
+    <li><b>Letak bunga</b>: muka depan / belakang / kanan / kiri.</li>
+    <li><b>Storage</b>: susun hirarki storage (Freezer A/B, Persib, Stok (ruang/rak), Dormansi (bak/rak/pemanas), Perkecambahan, dll).</li>
+  </ol>
+  <p>Setiap master melalui proses: <b>buat (DRAFT)</b> → <b>submit</b> → <b>approve</b> di antrian persetujuan master.</p>
+
+  <h2 class="pagebreak">4. Navigasi & cara baca data</h2>
+  <h3>4.1 Datalist + Filter</h3>
+  <ul>
+    <li>Semua halaman list memiliki filter: keyword (<span class="mono">q</span>), rentang tanggal, modul/submodul, storage, varietas, dan (opsional) trx_code.</li>
+    <li>Gunakan <b>Reset</b> untuk menghapus filter.</li>
+    <li>Jika data tidak muncul, periksa: rentang tanggal, SPU aktif, dan status master data (APPROVED).</li>
+  </ul>
+
+  <h3>4.2 Konsep transaksi: Id Trx dan multi-line</h3>
+  <p>Setiap transaksi disimpan sebagai:</p>
+  <ul>
+    <li><b>Header</b> (Id Trx): tanggal, modul, submodul, nomor register referensi, varietas snapshot (jika tersedia).</li>
+    <li><b>Lines</b>: material, trx_code, qty_signed, uom, storage, data1/data2.</li>
+  </ul>
+  <div class="callout">
+    <p><b>Makna qty_signed</b>: <b>+</b> penambahan, <b>-</b> pengurangan, <b>0</b> event tanpa mutasi stok.</p>
+  </div>
+
+  <h2>5. Proses bisnis end-to-end (Cross Function)</h2>
+  <p>Bagian ini adalah panduan operasional dari awal sampai selesai proses bisnis.</p>
+
+  <h3>5.1 Pohon Induk — Jantan (Pohon Bapak)</h3>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output (lines)</th></tr>
+    <tr>
+      <td>Register bunga jantan</td>
+      <td class="mono">PI_BJANTAN_REGISTER</td>
+      <td>Pilih <b>Pohon</b> (sex = DURA/Jantan), pilih <b>Letak bunga</b>, tanggal</td>
+      <td>+1 Bunga Jantan (Kebun)</td>
+    </tr>
+    <tr>
+      <td>Bungkus</td>
+      <td class="mono">PI_BJANTAN_BUNGKUS</td>
+      <td>Tanggal</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Panen bunga jantan</td>
+      <td class="mono">PI_BJANTAN_PANEN</td>
+      <td>Tanggal</td>
+      <td>-1 Bunga Jantan</td>
+    </tr>
+    <tr>
+      <td>Input unit polen</td>
+      <td class="mono">PI_BJANTAN_POLEN</td>
+      <td>Qty unit polen, Freezer (A/B), tanggal</td>
+      <td>+N Unit Polen (Freezer)</td>
+    </tr>
+    <tr>
+      <td>Viabilitas polen</td>
+      <td class="mono">PI_POLEN_VIABILITAS</td>
+      <td>Nilai viabilitas, tanggal</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Konversi polen → talkum</td>
+      <td class="mono">PI_POLEN_TALKUM</td>
+      <td>Unit polen dipakai, Freezer asal (polen), Freezer tujuan (talkum), tanggal</td>
+      <td><b>Multi-line</b>: Polen -unit, Talkum +(unit×8)</td>
+    </tr>
+    <tr>
+      <td>Viabilitas talkum</td>
+      <td class="mono">PI_TALKUM_VIABILITAS</td>
+      <td>Nilai viabilitas, tanggal</td>
+      <td>Event (0)</td>
+    </tr>
+  </table>
+  <div class="callout">
+    <p><b>Catatan penting</b>: Konversi polen→talkum menambah stok talkum. Pastikan storage (Freezer tujuan) benar agar pencarian talkum saat penyerbukan mudah.</p>
+  </div>
+
+  <h3>5.2 Pohon Induk — Betina (Pohon Ibu) & Persil/Persilangan</h3>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output (lines)</th></tr>
+    <tr>
+      <td>Register bunga betina</td>
+      <td class="mono">PI_BBETINA_REGISTER</td>
+      <td>Pilih <b>Pohon</b> (sex = PISIFERA/Betina), pilih letak bunga, tanggal</td>
+      <td>+1 Bunga Betina (Kebun)</td>
+    </tr>
+    <tr>
+      <td>Bungkus</td>
+      <td class="mono">PI_BBETINA_BUNGKUS</td>
+      <td>Tanggal</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Request puffer/talkum</td>
+      <td class="mono">PI_BBETINA_REQPUFFER</td>
+      <td>Qty diminta (default 4), tanggal rencana penyerbukan</td>
+      <td>Event (0) + metadata qty diminta</td>
+    </tr>
+    <tr>
+      <td>Penyerbukan (persil/persilangan)</td>
+      <td class="mono">PI_BBETINA_PENYERBUKKAN</td>
+      <td><b>Register Jantan</b>, tanggal persil, qty talkum dipakai, freezer sumber talkum</td>
+      <td><b>Multi-line</b>: Bunga Betina -1, Persil +1, Talkum -qty</td>
+    </tr>
+    <tr>
+      <td>Pengamatan persil</td>
+      <td class="mono">PI_PERSIL_PENGAMATAN</td>
+      <td>Tanggal, catatan/status</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Jadwal panen persil</td>
+      <td class="mono">PI_PERSIL_JADWALPANEN</td>
+      <td>Tanggal, tanggal rencana panen</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Panen persil</td>
+      <td class="mono">PI_PERSIL_PANEN</td>
+      <td>Tanggal, (opsional) berat panen</td>
+      <td>-1 Persil</td>
+    </tr>
+  </table>
+
+  <div class="callout">
+    <p><b>Aturan praktis penyerbukan</b></p>
+    <ul>
+      <li>Register Betina dan Persil menggunakan 1 kode (umumnya nomor register betina sebagai kunci).</li>
+      <li>Untuk menjaga ketertelusuran, selalu isi <b>Register Jantan</b> pada penyerbukan dan gunakan talkum dari register jantan tersebut.</li>
+    </ul>
+  </div>
+
+  <h3>5.3 Produksi — Persib (Persiapan Benih)</h3>
+  <p>Setelah panen persil, proses dilanjutkan ke Persib. Gunakan nomor register betina sebagai referensi transaksi produksi.</p>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output (lines)</th></tr>
+    <tr>
+      <td>Masuk Persib</td>
+      <td class="mono">PRD_PERSIB_IN</td>
+      <td>Tanggal tandan</td>
+      <td>+1 Tandan (Persib)</td>
+    </tr>
+    <tr>
+      <td>Timbang</td>
+      <td class="mono">PRD_PERSIB_TIMBANG</td>
+      <td>Berat tandan</td>
+      <td>Event (0) + data berat</td>
+    </tr>
+    <tr>
+      <td>Fermentasi</td>
+      <td class="mono">PRD_PERSIB_FERMENTASI</td>
+      <td>Nomor peti</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Cincang</td>
+      <td class="mono">PRD_PERSIB_CINCANG</td>
+      <td>-</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Pipil</td>
+      <td class="mono">PRD_PERSIB_PIPIL</td>
+      <td>-</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Kupas</td>
+      <td class="mono">PRD_PERSIB_KUPAS</td>
+      <td>Berat benih basah</td>
+      <td>-1 Tandan (Persib) + data berat benih basah</td>
+    </tr>
+    <tr>
+      <td>Seleksi benih</td>
+      <td class="mono">PRD_PERSIB_SELEKSI</td>
+      <td>Jml benih baik, jml afkir</td>
+      <td><b>Multi-line</b>: Benih +baik, Benih -afkir (Persib)</td>
+    </tr>
+    <tr>
+      <td>Keluar Persib → Masuk Stok</td>
+      <td class="mono">PRD_PERSIB_OUT + PRD_STOK_IN</td>
+      <td>Qty benih keluar</td>
+      <td><b>Multi-line</b>: Benih -qty (Persib) &amp; Benih +qty (Stok)</td>
+    </tr>
+  </table>
+
+  <h3>5.4 Produksi — Stok</h3>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output</th></tr>
+    <tr>
+      <td>Tagging</td>
+      <td class="mono">PRD_STOK_TAGGING</td>
+      <td>Qty benih tagged</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Penempatan storage</td>
+      <td class="mono">PRD_STOK_STORAGE</td>
+      <td>Ruangan &amp; nomor rak</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Out ke Dormansi</td>
+      <td class="mono">PRD_STOK_OUT</td>
+      <td>-</td>
+      <td>Event (0) perpindahan fase</td>
+    </tr>
+  </table>
+
+  <h3>5.5 Produksi — Dormansi</h3>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output</th></tr>
+    <tr>
+      <td>Masuk Dormansi</td>
+      <td class="mono">PRD_DRM_IN</td>
+      <td>-</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Perendaman 1</td>
+      <td class="mono">PRD_DRM_RENDAM1</td>
+      <td>Nomor bak + nomor rak penirisan</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Pemanasan</td>
+      <td class="mono">PRD_DRM_PANAS</td>
+      <td>Ruang pemanas</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Perendaman 2</td>
+      <td class="mono">PRD_DRM_RENDAM2</td>
+      <td>Nomor bak + nomor rak penirisan</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Keluar Dormansi</td>
+      <td class="mono">PRD_DRM_OUT</td>
+      <td>-</td>
+      <td>Event (0) menuju Perkecambahan</td>
+    </tr>
+  </table>
+
+  <h3>5.6 Produksi — Perkecambahan & Pengemasan</h3>
+  <table>
+    <tr><th>Langkah</th><th>Trx Code</th><th>Input utama</th><th>Output</th></tr>
+    <tr>
+      <td>Masuk Perkecambahan</td>
+      <td class="mono">PRD_KCB_IN</td>
+      <td>-</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Pemanasan</td>
+      <td class="mono">PRD_KCB_PANAS</td>
+      <td>Ruang pemanas</td>
+      <td>Event (0)</td>
+    </tr>
+    <tr>
+      <td>Pengamatan</td>
+      <td class="mono">PRD_KCB_PENGAMATAN</td>
+      <td>Status “sudah waktunya keluar/belum”</td>
+      <td>Event (0) <span class="muted small">(opsional: jika user ingin catat perpindahan tray, gunakan trx tambahan)</span></td>
+    </tr>
+    <tr>
+      <td>Seleksi kecambah</td>
+      <td class="mono">PRD_KCB_SELEKSI</td>
+      <td>Jml kecambah baik, jml afkir</td>
+      <td><b>Multi-line</b>: Kecambah +baik, Kecambah -afkir</td>
+    </tr>
+    <tr>
+      <td>Pengemasan</td>
+      <td class="mono">PRD_KCB_PENGEMASAN</td>
+      <td>Qty dikemas</td>
+      <td>+N Kecambah (kemasan)</td>
+    </tr>
+  </table>
+
+  <h2 class="pagebreak">6. QR (Scan & Action) — percepat input & telusur</h2>
+  <p>QR dipakai untuk membuka halaman target dan memicu <i>prefill</i> form input sesuai konteks.</p>
+  <table>
+    <tr>
+      <th>Jenis QR</th>
+      <th>Ditempel di</th>
+      <th>Hasil scan (contoh aksi)</th>
+    </tr>
+    <tr>
+      <td><b>QR Pohon</b></td>
+      <td>Pohon fisik</td>
+      <td>Detail Pohon, Buat Register Jantan (sex=DURA), Buat Register Betina (sex=PISIFERA)</td>
+    </tr>
+    <tr>
+      <td><b>QR Register/Persil</b></td>
+      <td>Kartu register betina/persil</td>
+      <td>Riwayat per Register, Penyerbukan, Proses Persib/Produksi (prefill register)</td>
+    </tr>
+    <tr>
+      <td><b>QR Storage</b></td>
+      <td>Freezer/Ruang/Rak/Bak/Ruang Pemanas</td>
+      <td>Stok per Storage, Input reading suhu, Inspeksi/maintenance</td>
+    </tr>
+  </table>
+  <div class="callout">
+    <p><b>Cetak label QR</b></p>
+    <ul>
+      <li>Label seragam (logo + jenis + QR + kode besar), dibedakan per jenis melalui ikon dan warna header.</li>
+      <li>Dapat dicetak <b>multiple kartu</b> dalam 1 kali output (PDF atau print view).</li>
+      <li>Akses tetap mengikuti permission dan SPU.</li>
+    </ul>
+  </div>
+
+  <h2>7. Monitoring Storage (Temp/RH & Stock by Storage)</h2>
+  <h3>7.1 Sumber data reading</h3>
+  <ul>
+    <li><b>Auto</b>: dari perangkat sensor (ingest API / integrasi IoT).</li>
+    <li><b>Manual</b>: input user melalui form (fallback/cek harian).</li>
+  </ul>
+  <h3>7.2 Pengelolaan yang tersedia</h3>
+  <ul>
+    <li><b>Devices</b> (master maker–approver): mapping device → storage → metrik (TEMP/RH/DOOR/POWER).</li>
+    <li><b>Thresholds</b> (master maker–approver): min/max + durasi pelanggaran + severity.</li>
+    <li><b>Readings</b> (operasional): pencatatan nilai (TEMP/RH, dsb) per waktu.</li>
+    <li><b>Alerts</b> (operasional): OPEN/ACK/CLOSED; bisa di-acknowledge.</li>
+    <li><b>Calibration</b>, <b>Inspections</b>, <b>Maintenance</b> (operasional): catatan kalibrasi, inspeksi, dan pemeliharaan.</li>
+  </ul>
+  <div class="callout">
+    <p><b>Tips</b>: gunakan QR Storage untuk membuka “Input Reading” dan otomatis memilih storage yang benar.</p>
+  </div>
+
+  <h2>8. Laporan utama (untuk operasional & manajemen)</h2>
+  <ul>
+    <li><b>Riwayat per Register</b>: tabel lengkap end-to-end (group by Id Trx).</li>
+    <li><b>Monitor Modul</b>: rekap jumlah transaksi/event per modul/submodul/trx_code (date range).</li>
+    <li><b>Kecambah per Varietas</b>: produksi kecambah per varietas per bulan/date range (sumber utama <span class="mono">PRD_KCB_PENGEMASAN</span>).</li>
+    <li><b>WIP Dormansi &amp; WIP Perkecambahan</b>: posisi terakhir per storage (as-of date).</li>
+    <li><b>Stok per Storage</b>: saldo per storage (anak &amp; induk, termasuk descendants bila storage_id FK sudah dipakai).</li>
+    <li><b>Sensus Pohon</b>: statistik pohon (kebun/blok/varietas/sex/kondisi, termasuk pohon mati).</li>
+  </ul>
+
+  <h2>9. Troubleshooting cepat</h2>
+  <table>
+    <tr><th>Masalah</th><th>Penyebab umum</th><th>Cara cek/solusi</th></tr>
+    <tr>
+      <td>Data master tidak muncul di dropdown</td>
+      <td>Master masih DRAFT/SUBMITTED, belum APPROVED</td>
+      <td>Cek antrian persetujuan master, approve terlebih dahulu</td>
+    </tr>
+    <tr>
+      <td>Data transaksi “hilang”</td>
+      <td>Filter tanggal/SPU salah</td>
+      <td>Reset filter, cek rentang tanggal, pastikan SPU aktif sesuai</td>
+    </tr>
+    <tr>
+      <td>Laporan “Kecambah per Varietas” kosong</td>
+      <td>Register betina belum memiliki varietas snapshot atau query join salah</td>
+      <td>Pastikan register betina terisi varietas_id; gunakan LEFT JOIN + COALESCE “Tidak diketahui”</td>
+    </tr>
+    <tr>
+      <td>Talkum tidak bisa ditelusur sumbernya</td>
+      <td>Penyerbukan tidak mencatat register jantan atau talkum tanpa referensi</td>
+      <td>Wajib isi register jantan saat penyerbukan; pastikan talkum berasal dari konversi jantan</td>
+    </tr>
+    <tr>
+      <td>Scan QR tapi tidak bisa akses</td>
+      <td>Tidak punya permission / beda SPU</td>
+      <td>Login dengan role benar; pastikan SPU sama (atau gunakan admin global)</td>
+    </tr>
+  </table>
+
+  <h2>10. Lampiran — daftar trx_code ringkas</h2>
+  <p class="small muted">Referensi cepat untuk pencarian/filter. Detail field mengikuti form di aplikasi.</p>
+  <table class="small">
+    <tr><th>Area</th><th>Trx Code</th></tr>
+    <tr><td>Pohon Induk (Jantan)</td><td class="mono">PI_BJANTAN_REGISTER, PI_BJANTAN_BUNGKUS, PI_BJANTAN_PANEN, PI_BJANTAN_POLEN, PI_POLEN_VIABILITAS, PI_POLEN_TALKUM, PI_TALKUM_VIABILITAS</td></tr>
+    <tr><td>Pohon Induk (Betina/Persil)</td><td class="mono">PI_BBETINA_REGISTER, PI_BBETINA_BUNGKUS, PI_BBETINA_REQPUFFER, PI_BBETINA_PENYERBUKKAN, PI_PERSIL_PENGAMATAN, PI_PERSIL_JADWALPANEN, PI_PERSIL_PANEN</td></tr>
+    <tr><td>Produksi (Persib)</td><td class="mono">PRD_PERSIB_IN, PRD_PERSIB_TIMBANG, PRD_PERSIB_FERMENTASI, PRD_PERSIB_CINCANG, PRD_PERSIB_PIPIL, PRD_PERSIB_KUPAS, PRD_PERSIB_SELEKSI, PRD_PERSIB_OUT</td></tr>
+    <tr><td>Produksi (Stok)</td><td class="mono">PRD_STOK_IN, PRD_STOK_TAGGING, PRD_STOK_STORAGE, PRD_STOK_OUT</td></tr>
+    <tr><td>Produksi (Dormansi)</td><td class="mono">PRD_DRM_IN, PRD_DRM_RENDAM1, PRD_DRM_PANAS, PRD_DRM_RENDAM2, PRD_DRM_OUT</td></tr>
+    <tr><td>Produksi (Perkecambahan)</td><td class="mono">PRD_KCB_IN, PRD_KCB_PANAS, PRD_KCB_PENGAMATAN, PRD_KCB_SELEKSI, PRD_KCB_PENGEMASAN</td></tr>
+  </table>
+</body>
+</html>
