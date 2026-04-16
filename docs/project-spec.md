@@ -531,6 +531,47 @@ Prinsip awal UI:
    - dokumen terakhir berubah oleh siapa
    - apakah ada reject dan alasannya
 
+### 15.1 Arah Visual UI
+
+Gaya visual yang disepakati:
+
+- profesional
+- compact
+- padat tetapi tetap jelas dilihat mata
+- dominan warna putih dan biru
+- warna lain boleh digunakan selama tetap relevan secara fungsi dan tidak mengganggu keterbacaan
+
+Implikasi desain:
+
+1. Gunakan layout yang efisien ruang, terutama pada form dan tabel yang panjang.
+2. Jaga hierarki visual tetap tegas melalui tipografi, spacing, border, dan grouping section.
+3. Hindari tampilan terlalu dekoratif; fokus pada kejelasan data, status, dan aksi.
+4. Warna utama dapat memakai:
+   - putih sebagai background dominan
+   - biru sebagai warna primer untuk aksi utama, highlight, dan identitas visual
+5. Warna status harus fungsional dan konsisten, misalnya:
+   - biru untuk proses/informational
+   - hijau untuk approved/success
+   - merah untuk reject/error
+   - kuning atau oranye untuk warning/pending tertentu jika diperlukan
+6. Komponen seperti card, tabel, form section, badge status, dan timeline harus terlihat rapi, ringkas, dan mudah dipindai mata.
+7. Dense layout tetap harus menjaga kenyamanan:
+   - ukuran klik tetap aman
+   - label tetap terbaca
+   - field penting tidak saling berhimpitan
+8. Untuk halaman monitoring dan approval, informasi yang paling penting harus terlihat tanpa perlu terlalu banyak scroll:
+   - status
+   - current approver
+   - total nilai
+   - nomor bayangan/final
+   - aksi utama
+9. Gunakan visual emphasis secukupnya pada:
+   - tombol aksi utama
+   - status dokumen
+   - step approval aktif
+   - informasi reject atau masalah validasi
+10. Bila perlu menggunakan warna tambahan, gunakan sebagai aksen sekunder, bukan menggeser identitas utama putih-biru.
+
 ---
 
 ## 16. Deliverable Fase Implementasi Awal
@@ -570,6 +611,7 @@ Target implementasi awal untuk PPAB:
 - perubahan item/nilai wajib menghitung ulang capaian
 - reject/revisi tetap memakai dokumen yang sama dengan history tetap tersimpan
 - alur kewenangan boleh diubah
+- gaya UI: profesional, compact, padat, dominan putih dan biru
 
 ---
 

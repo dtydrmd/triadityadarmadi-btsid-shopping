@@ -278,7 +278,12 @@ Tugas:
    - state management
    - form model / validation
 4. jika perlu, implementasikan scaffold awal
-5. jangan implementasikan semua halaman sekaligus
+5. turunkan prinsip UI dari spesifikasi ke fondasi frontend, termasuk:
+   - gaya profesional
+   - layout compact, padat, tapi tetap mudah dibaca
+   - dominan putih dan biru
+   - warna lain hanya sebagai aksen status atau semantic state
+6. jangan implementasikan semua halaman sekaligus
 
 Tujuan step ini adalah membangun fondasi frontend yang rapi untuk form PPAB, inbox approval, dan monitoring.
 ```
@@ -310,6 +315,8 @@ Catatan:
 - jangan hardcode option yang seharusnya berasal dari API
 - susun komponen form agar modular
 - siapkan validasi yang sesuai rule bisnis
+- gunakan tampilan profesional, compact, padat, dan dominan putih-biru
+- pastikan hierarchy visual jelas untuk section header, item table, approval flow, dan summary nilai
 ```
 
 ---
@@ -334,6 +341,7 @@ Tugas:
 5. tampilkan approval history dan change log
 
 Pastikan UX menjelaskan dengan jelas siapa current approver dan apa dampak tiap aksi.
+Gunakan visual yang profesional, ringkas, dan informatif dengan penekanan warna utama putih dan biru.
 ```
 
 ---
@@ -359,6 +367,7 @@ Tugas:
 5. tampilkan change log dan attachment
 
 Tujuan utama halaman ini adalah agar user bisa memonitor progres dokumennya tanpa ambigu.
+Desain harus tetap compact dan mudah discan, terutama pada tabel, status badge, dan timeline.
 ```
 
 ---
@@ -451,6 +460,7 @@ Mulai dari analisis struktur project, lalu buat rencana singkat, kemudian implem
 
 Kerjakan bertahap dan jelaskan keputusan penting selama implementasi.
 Jangan mengerjakan modul PR, HPS, PO, SPP, Voucher, atau Register selain menyiapkan extensibility-nya.
+Untuk frontend, gunakan gaya UI profesional, compact, padat namun tetap jelas dibaca, dengan dominasi warna putih dan biru serta aksen warna lain yang relevan untuk state/status.
 ```
 
 ---
